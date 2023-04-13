@@ -1,0 +1,39 @@
+/// <reference types="cypress" />
+
+
+
+describe('testing weathermap', () => {
+    beforeEach (() => {
+     cy.visit('https://openweathermap.org/');
+    })
+    
+    it('text', () =>{
+        cy.get('#desktop-menu').contains('Guide').click({force: true});
+        cy.get('.col-sm-12 h1').should('have.text', 'Weather data in a fast and easy-to-use way');
+        cy.get('.col-sm-12 > :nth-child(6)').should('have.text', 'OpenWeather products');
+        cy.get(':nth-child(13) > b').should('have.text', 'Professional collections:');
+        cy.get('ol > :nth-child(14)').should('have.text', 'Dedicated weather products ');
+        cy.get('ol > :nth-child(21)').should('have.text', 'Openweather NWP model');
+        cy.get('ol > :nth-child(24)').should('have.text', 'How to start using Weather API');
+    })
+    
+    it ('sign in', () =>{ //авторизация
+        cy.visit('https://openweathermap.org/')
+        cy.get('li.user-li').contains('Sign in').click({force: true})
+        cy.get('#user_email')
+          .should('have.attr', 'placeholder', 'Enter email')
+          .type('oforostinko@gmail.com') 
+        cy.get('#user_password.form-control')
+          .should('have.attr', 'placeholder', 'Password')
+          .type('12341234')
+    })
+    
+    it('AT_001.016 | Main page > Section with search > Search City', () => {
+        const city = 'Boston';
+        cy.get('div.search').should('be.visible').click({force: true}).type(city);
+        cy.get('.button-round').click();
+        cy.get(':nth-child(1) > [style="width: 140px;"]').click();
+        cy.get('.current-container > :nth-child(1) > h2').should('contain', city);
+    })
+    
+ })
