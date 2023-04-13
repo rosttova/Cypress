@@ -1,0 +1,42 @@
+/// <reference types="cypress"/>
+
+const API_BASE_URL = Cypress.env('apiBaseUrl');
+const apiData = require('../../fixtures/apiData.json');
+
+describe('annaSmSpec', () => {
+
+    const getBooking = () =>
+        cy.request({
+            method: 'GET',
+            url: `${API_BASE_URL}/booking`
+        })
+
+    describe('getBookingIds', () => {
+        it('verify status code', () => {
+            getBooking().then(({ status }) => {
+                expect(status).to.eq(200);
+            })
+        })
+
+        it('verify elements of response', () => {
+            getBooking().then((response) => {
+                expect(response).has.property('headers');
+            });
+        });
+
+        it('verify keys of responce', () => {
+            getBooking().then((response) => {
+                expect(response.body[0]).to.have.keys('bookingid');
+            });
+        });
+
+        it('verify headers of response', () => {
+            getBooking().then(({ headers }) => {
+                let responseBodyKeysArray = Object.keys(headers);
+                responseBodyKeysArray.forEach((i, arr) => {
+                    expect(arr[i]).to.equal(apiData.lapData.getBookingHeaders.properties[i]);
+                });
+            });
+        });
+    });
+});
